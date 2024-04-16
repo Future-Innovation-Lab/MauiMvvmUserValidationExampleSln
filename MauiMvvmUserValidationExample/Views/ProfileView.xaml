@@ -1,0 +1,154 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:local="clr-namespace:MauiMvvmUserValidationExample.ViewModels"
+             x:Class="MauiMvvmUserValidationExample.ProfileView" x:DataType="local:ProfileViewModel">
+
+    <ContentPage.Resources>
+        <Style x:Key="InvalidEntryStyle" TargetType="Entry">
+            <Setter Property="TextColor" Value="Red" />
+        </Style>
+        <Style x:Key="ValidEntryStyle" TargetType="Entry">
+            <Setter Property="TextColor" Value="Green" />
+        </Style>
+    </ContentPage.Resources>
+
+    <ScrollView>
+        
+        
+        
+            <StackLayout Padding="20">
+                <Label Text="User Profile" 
+               FontSize="32" 
+               HorizontalOptions="CenterAndExpand" />
+
+                <Image Source="dotnet_bot.png" 
+               WidthRequest="100" 
+               HeightRequest="100" 
+               HorizontalOptions="CenterAndExpand" />
+
+                <Label Text="Name" 
+               FontSize="20" />
+
+            <Entry Placeholder="Enter your name" 
+               FontSize="18" Text="{Binding FullName}">
+
+                <Entry.Behaviors>
+                    <toolkit:TextValidationBehavior 
+                InvalidStyle="{StaticResource InvalidEntryStyle}"
+                ValidStyle="{StaticResource ValidEntryStyle}"
+                Flags="ValidateOnValueChanged"
+                MinimumLength="1"
+                MaximumLength="20"
+                        IsValid="{Binding IsFullNameValid}"
+                        />
+                   
+                </Entry.Behaviors>
+            </Entry>
+
+            <Label Text="Email" 
+               FontSize="20" />
+
+            <Entry Placeholder="Enter your email" 
+               FontSize="18" Text="{Binding EmailAddress}">
+
+                <Entry.Behaviors>
+                    <toolkit:EmailValidationBehavior InvalidStyle="{StaticResource InvalidEntryStyle}"
+                                       IsValid="{Binding IsEmailValid}"                                                
+                                       ValidStyle="{StaticResource NormalEntryStyle}"                                                     
+                                       Flags="ValidateOnValueChanged" >
+                    </toolkit:EmailValidationBehavior>
+                </Entry.Behaviors>
+
+            </Entry>
+
+            <Label Text="Password" 
+               FontSize="20" />
+
+            <Entry  IsPassword="True" Placeholder="Password" Text="{Binding Password}" 
+               FontSize="18" >
+
+                <Entry.Behaviors>
+                    <toolkit:MultiValidationBehavior x:Name="PasswordMultiValidation"
+                InvalidStyle="{StaticResource InvalidEntryStyle}"  
+                ValidStyle="{StaticResource ValidEntryStyle}"
+                        
+                        IsValid="{Binding IsPasswordValid}"
+                Flags="ValidateOnValueChanged">
+
+                        <toolkit:CharactersValidationBehavior 
+                    x:Name="DigitValidation" 
+                    CharacterType="Digit" 
+                    MinimumCharacterTypeCount="1" 
+                    toolkit:MultiValidationBehavior.Error="1 digit" 
+                    RegexPattern="" />
+
+                        <toolkit:CharactersValidationBehavior 
+                    x:Name="UpperValidation" 
+                    CharacterType="UppercaseLetter" 
+                    MinimumCharacterTypeCount="1" 
+                    toolkit:MultiValidationBehavior.Error="1 upper case" 
+                    RegexPattern="" />
+
+                        <toolkit:CharactersValidationBehavior 
+                    x:Name="SymbolValidation" 
+                    CharacterType="NonAlphanumericSymbol" 
+                    MinimumCharacterTypeCount="1" 
+                    toolkit:MultiValidationBehavior.Error="1 symbol" 
+                    RegexPattern=""  />
+
+                        <toolkit:CharactersValidationBehavior 
+                    x:Name="AnyValidation" 
+                    CharacterType="Any" 
+                    MinimumCharacterTypeCount="8" 
+                    toolkit:MultiValidationBehavior.Error="8 characters" 
+                    RegexPattern="" />
+                    </toolkit:MultiValidationBehavior>
+                </Entry.Behaviors>
+
+            </Entry>
+
+            <Label Text="Confirm Password" 
+               FontSize="20" />
+
+
+            <Entry  IsPassword="True" Placeholder="Confirm Password"  Text="{Binding ConfirmedPassword}"
+               FontSize="18" >
+
+                <Entry.Behaviors>
+                    <toolkit:RequiredStringValidationBehavior 
+                InvalidStyle="{StaticResource InvalidEntryStyle}"
+               ValidStyle="{StaticResource ValidEntryStyle}"
+                   IsValid="{Binding IsConfirmedPasswordValid}"                                                
+
+                        Flags="ValidateOnValueChanged"
+                RequiredString="{Binding Password}" />
+                </Entry.Behaviors>
+            </Entry>
+
+            <Label Text="Blog Url" 
+               FontSize="20" />
+
+            <Entry Placeholder="Blog Url" Text="{Binding BlogUrl}">
+                <Entry.Behaviors>
+                    <toolkit:UriValidationBehavior 
+                InvalidStyle="{StaticResource InvalidEntryStyle}"
+                ValidStyle="{StaticResource ValidEntryStyle}"
+                        IsValid="{Binding IsBlogUrlValid}"
+                Flags="ValidateOnValueChanged"
+                UriKind="Absolute" />
+                </Entry.Behaviors>
+            </Entry>
+
+            <Label HeightRequest="30"
+                    Text="{Binding Errors[0], Source={x:Reference PasswordMultiValidation}}"/>
+
+
+            <Button Text="Save" 
+                FontSize="20" 
+                HorizontalOptions="CenterAndExpand" Command="{Binding SaveCommand}" />
+            </StackLayout>
+    </ScrollView>
+
+</ContentPage>
